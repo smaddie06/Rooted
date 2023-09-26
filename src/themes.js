@@ -1,8 +1,13 @@
 const theme = {
   colors: {
-    primary: "#FFD2DD82",
-    secondary: "#518770",
-    tertiary: "#DEE9E3",
+    background: "#FBF1F1",
+    secondary: "#0e3b0e",
+    tertiary: "#5c7f3f",
+    // background: "#FFEEF3",
+    // title_back: "#518770",
+    // title_text: "#DEE9E3",
+    // button_back: "#B6DFC9",
+    // button_text: "#315E58",
   },
 
   size: {
