@@ -16,7 +16,11 @@ export default function App() {
           component={Login}
           options={{ headerShown: false }}
         />
-        <Stack.Screen name="Tree" component={User_tree} />
+        <Stack.Screen
+          name="Tree"
+          component={User_tree}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

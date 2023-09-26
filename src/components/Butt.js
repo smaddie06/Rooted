@@ -5,7 +5,13 @@ function Butt(props) {
   return (
     <Pressable
       onPress={props.handlePress}
-      style={[button_styles.container, { marginBottom: props.marginBottom }]}
+      style={[
+        button_styles.container,
+        {
+          marginBottom: props.marginBottom,
+        },
+      ]}
+      disabled={props.disabled || false}
     >
       <Text style={button_styles.text}>{props.name}</Text>
     </Pressable>
@@ -14,16 +20,16 @@ function Butt(props) {
 const button_styles = StyleSheet.create({
   container: {
     backgroundColor: theme.colors.secondary,
-    width: 170,
-    height: 50,
+    width: 200,
+    height: 70,
     alignItems: "center",
     justifyContent: "center",
-    borderRadius: "20",
+    borderRadius: "10",
     marginBottom: 200,
   },
   text: {
-    color: theme.colors.tertiary,
-    fontSize: 30,
+    color: "#FFFFFF",
+    fontSize: 20,
   },
 });
 export default Butt;
