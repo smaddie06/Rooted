@@ -9,7 +9,7 @@ function Icon(props) {
           source={{
             uri: props.image,
           }}
-          style={{ width: 40, height: 40 }}
+          style={{ width: 50, height: 50 }}
         />
       </Pressable>
     </View>
