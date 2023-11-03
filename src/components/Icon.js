@@ -1,16 +1,11 @@
 import { Text, View, StyleSheet, Pressable, Image } from "react-native";
-import theme from "../themes";
+import menu from "/Users/mbailey/Desktop/Rooted/assets/menu.png";
 
 function Icon(props) {
   return (
     <View style={props.style}>
       <Pressable onPress={props.onPress}>
-        <Image
-          source={{
-            uri: props.image,
-          }}
-          style={{ width: 50, height: 50 }}
-        />
+        <Image source={props.image} style={{ width: 50, height: 50 }} />
       </Pressable>
     </View>
   );

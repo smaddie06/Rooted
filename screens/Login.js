@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import Butt from "../src/components/Butt";
-
 import { useNavigation } from "@react-navigation/native";
 import theme from "../src/themes";
 import Name_logo from "../src/components/Title_Card";
@@ -12,9 +11,7 @@ function Login() {
     <View style={login_styles.background}>
       <View style={login_styles.content}>
         <Image
-          source={{
-            uri: "/Users/mbailey/Desktop/Rooted/assets/ai_tree.png",
-          }}
+          source={require("../assets/icon.png")}
           style={{ width: 350, height: 400, marginBottom: 50 }}
         />
         <Text style={login_styles.text}>Rooted</Text>

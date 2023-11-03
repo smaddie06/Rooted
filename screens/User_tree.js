@@ -1,19 +1,23 @@
-import { Text, View, StyleSheet, Image, Button } from "react-native";
+import { Text, View, StyleSheet, Image, Button, Pressable } from "react-native";
 import theme from "../src/themes";
-import Title_Card from "../src/components/Title_Card";
 import Butt from "../src/components/Butt";
-import React, { useState, useEffect } from "react";
-import Moment from "react-moment";
-import Icon from "../src/components/Icon.js";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
-import Menu from "../src/components/Menu";
+import Menu from "./Menu";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Overlay } from "@rneui/themed";
+import tree_new_png from "../assets/tree_new.png";
+import menu from "../assets/menu.png";
+import Icon from "../src/components/Icon";
+import Medicine_Check from "./Medicine_Check";
+import Check_Box from "../src/components/Check_Box";
 
 function User_tree() {
   const [count, setCount] = useState(0);
   const [lastPressTime, setLastPressTime] = useState(100000);
   const [canPush, setCanPush] = useState(true);
-  const potato = "HEYO";
+  const [seeMed, setSeeMed] = useState(false);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   useEffect(() => {
     initCount();
@@ -23,14 +27,17 @@ function User_tree() {
     updateCount();
   }, [count]);
 
+  // runs only when the component is re-rendered. On the very first run through when only null is stored in async storage
+  // a count value with a key of 0 is initialised
+  //after that, the value of count stored in async storage is fetched and the value of count stored in state is updated to be
+  //equal to the value stored in async
   const initCount = async () => {
     try {
       const dayNumber = await AsyncStorage.getItem("Count");
       const currentDay = JSON.parse(dayNumber);
       if (currentDay !== null) {
         setCount(parseInt(currentDay));
-        console.log(currentDay);
-        console.log("we ran");
+        // console.log(currentDay);
       } else {
         await AsyncStorage.setItem("Count", JSON.stringify(0));
         console.log("set to 0");
@@ -40,50 +47,27 @@ function User_tree() {
     }
   };
 
+  //runs every time the value of state count changes
+  //updates the value in async to be equal to the new value of state count
   const updateCount = async () => {
-    console.log("MADE IT HERE");
+    // console.log("MADE IT HERE");
     try {
       await AsyncStorage.setItem("Count", JSON.stringify(count));
       const dayNumber = await AsyncStorage.getItem("Count");
       const currentDay = JSON.parse(dayNumber);
-      console.log("current value in async : ", currentDay);
+      // console.log("current value in async : ", currentDay);
     } catch (error) {
       console.log(error);
       console.log("NOTHING IN COUNT?");
     }
   };
 
-  // const initCount = async () => {
-  //     try {
-  //       await AsyncStorage.setItem("Count", JSON.stringify(0));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  // }
-  // const getCount = async () => {
-  //   try {
-  //     const dayNumber = await AsyncStorage.getItem("Count");
-  //     const currentDay = JSON.parse(dayNumber);
-  //     if (currentDay !== null) {
-  //       setCount(parseInt(currentDay))
-  //       console.log(currentDay);
-  //       console.log("we ran");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  //const increment = () =>
   const increment = () => {
     // Update the last press time
     setCount((prevCount) => prevCount + 1);
     setLastPressTime(new Date().toISOString());
     console.log(lastPressTime);
     setCanPush(false);
-
-    // setLastPressTime(moment());
   };
 
   const handleRefresh = () => {
@@ -107,27 +91,82 @@ function User_tree() {
 
   return (
     <View style={tree_styles.background}>
+      <Overlay
+        isVisible={menuVisible}
+        pressableProps=""
+        onBackdropPress={() => setMenuVisible(false)}
+        overlayStyle={{
+          justifyContent: "flex-start",
+          backgroundColor: theme.colors.secondary,
+          alignContent: "flex-start",
+          marginRight: 300,
+          height: 950,
+          width: 200,
+        }}
+      >
+        <Menu />
+        <View
+          style={{
+            marginRight: 300,
+            height: 400,
+            width: 200,
+            backgroundColor: theme.colors.secondary,
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {/* add items here that need to be in this file, not a child */}
+        </View>
+      </Overlay>
+
+      <Overlay
+        isVisible={seeMed}
+        onBackdropPress={() => setSeeMed(false)}
+        overlayStyle={{
+          back_card: {
+            width: 300,
+            height: 300,
+            borderRadius: 12,
+            backgroundColor: theme.colors.four,
+            alignItems: "center",
+            justifyContent: "flex-start",
+            marginTop: 150,
+          },
+        }}
+      >
+        <Medicine_Check />
+      </Overlay>
+
       <View
         style={{
           flexDirection: "row",
           justifyContent: "flex-start",
           height: 75,
           width: 400,
-          marginTop: 100,
+          marginTop: 70,
+          elevation: 1,
           zIndex: 1,
         }}
       >
         <Icon
-          onPress={() => console.log("menu")}
-          image="/Users/mbailey/Desktop/Rooted/assets/menu.png"
+          onPress={() => setMenuVisible(true)}
+          image={require("../assets/menu.png")}
           style={{
             alignSelf: "center",
             marginLeft: 40,
             paddingRight: 10,
+            elevation: 1,
             zIndex: 1,
           }}
         />
-        <Text style={[tree_styles.text, { alignSelf: "center" }]}>
+
+        {/* <Medicine_Check /> */}
+        <Text
+          style={[
+            tree_styles.text,
+            { alignSelf: "center", elevation: 1, zIndex: 1 },
+          ]}
+        >
           Your Tree Looks Good!
         </Text>
       </View>
@@ -140,40 +179,45 @@ function User_tree() {
       >
         <Icon
           onPress={handleRefresh}
-          image="/Users/mbailey/Desktop/Rooted/assets/refresh.png"
+          image={require("../assets/refresh.png")}
           style={{ alignSelf: "center", marginLeft: 40, paddingRight: 100 }}
         />
         <Text style={[tree_styles.text, { fontSize: 40, alignSelf: "center" }]}>
           {count}
         </Text>
       </View>
+      {/* <Medicine_Check /> */}
       <Image
-        source={{
-          uri: "/Users/mbailey/Desktop/Rooted/assets/tree_squre.png",
-        }}
-        style={{ width: 350, height: 400, marginBottom: 50 }}
+        source={require("../assets/tree_squre.png")}
+        style={{ width: 325, height: 375, marginBottom: 50 }}
       />
+
       <Butt
         handlePress={increment}
-        marginBottom={20}
+        marginBottom={30}
         name={canPush ? "Take" : "Already Taken"}
         disabled={canPush ? false : true}
+        color={canPush ? theme.colors.secondary : "#C9DAB3"}
       />
-      <Button title="go back temp" onPress={() => nav.navigate("Login")} />
-
       <View style={{ flexDirection: "row" }}>
         <Icon
           onPress={() => console.log("water")}
-          image="/Users/mbailey/Desktop/Rooted/assets/hose.png"
+          image={require("../assets/hose.png")}
         />
         <Icon
           onPress={() => console.log("sun")}
-          image="/Users/mbailey/Desktop/Rooted/assets/sun.png"
-          style={{ paddingLeft: 60, paddingRight: 60 }}
+          image={require("../assets/sun.png")}
+          style={{ paddingLeft: 40 }}
         />
         <Icon
-          onPress={() => console.log("food")}
-          image="/Users/mbailey/Desktop/Rooted/assets/pizza.png"
+          onPress={() => setSeeMed(true)}
+          image={require("../assets/pizza.png")}
+          style={{ paddingLeft: 40 }}
+        />
+        <Icon
+          image={require("../assets/pill.png")}
+          onPress={() => setSeeMed(true)}
+          style={{ paddingLeft: 40 }}
         />
       </View>
     </View>
@@ -197,6 +241,14 @@ const tree_styles = StyleSheet.create({
   },
   icon: {
     paddingLeft: 20,
+  },
+  mini_card: {
+    width: 250,
+    height: 100,
+    flexDirection: "row",
+    paddingBottom: 20,
+    paddingTop: 20,
+    backgroundColor: theme.colors.four,
   },
 });
 
