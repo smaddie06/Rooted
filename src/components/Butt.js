@@ -9,6 +9,7 @@ function Butt(props) {
         button_styles.container,
         {
           marginBottom: props.marginBottom,
+          backgroundColor: props.color || theme.colors.secondary,
         },
       ]}
       disabled={props.disabled || false}
